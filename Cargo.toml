@@ -1,0 +1,18 @@
+[package]
+name = "vimgyor"
+version = "0.1.0"
+rust-version = "1.62"
+authors = ["Gourav Khator <gouravkhator9@gmail.com>"]
+description = "vimgyor - a terminal-based image editor, making it vim, but for images"
+edition = "2021"
+categories = ["cli", "terminal", "image-editing", "editors"]
+keywords = ["vim", "cli", "image-editing", "image-editor", "editor", "terminal-based"]
+readme = "README.md"
+repository = "https://github.com/gouravkhator/vimgyor"
+license = "Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+crossterm = "0.25.0"
+thiserror = "1.0.32"
