@@ -16,7 +16,7 @@ pub struct Editor {
     mode: EditorMode,
     cursor_controller: CursorController,
     keypress_handler: KeypressHandler,
-    contents: EditorContents,
+    editor_contents: EditorContents,
 }
 
 // Editor's functions
@@ -32,7 +32,7 @@ impl Editor {
             mode: EditorMode::COMMAND,
             keypress_handler: KeypressHandler::new(),
             cursor_controller: CursorController::new(),
-            contents: EditorContents {},
+            editor_contents: EditorContents::new(),
         }
     }
 }

@@ -20,7 +20,7 @@ impl ArgParser {
         }
     }
 
-    fn validate_args_passed(args: &Args) -> Result<(), Box<dyn Error>> {
+    fn validate_args_passed(args: &Args) -> Result<(), Box<AppError>> {
         if args.len() > 2 {
             /*
              * we only support atmost 2 arguments,

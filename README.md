@@ -6,7 +6,13 @@
 
 Introducing a terminal-based image editor...
 
+> Note: Currently this image editor does not support **`Windows`** for now. I will try to add Windows support in near future, in all those parts wherever we invoke system commands or other OS-specific operations..
+
 ## Usage Docs
 
 - Keyboard shortcuts of this editor is listed in detail in [/docs/keyboard_shortcuts.md](./docs/keyboard_shortcuts.md).
 - Todos and Research works are listed in [/markdowns](./markdowns/) folder.
+
+## Special Credits
+
+- Terminal Color codes explained in detail in [this stackexchange answer](https://unix.stackexchange.com/a/124409).

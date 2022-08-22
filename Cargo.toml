@@ -15,4 +15,5 @@ license = "Apache-2.0"
 
 [dependencies]
 crossterm = "0.25.0"
+image = "0.24.3"
 thiserror = "1.0.32"

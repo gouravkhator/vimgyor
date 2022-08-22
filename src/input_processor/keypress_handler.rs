@@ -57,7 +57,7 @@ mod tests {
     use crossterm::terminal;
 
     #[test]
-    fn test() {
+    fn should_start_listening_to_keypresses() {
         terminal::enable_raw_mode().expect("Unable to enter into the raw mode..");
         KeypressHandler::new()
             .listen_key_presses(&mut CursorController::new())

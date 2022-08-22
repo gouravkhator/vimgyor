@@ -2,6 +2,7 @@
 mod cleanup;
 mod editor_processor;
 mod error_handler;
+mod image_processor;
 mod input_processor;
 
 use std::error::Error;
@@ -11,6 +12,7 @@ use crossterm::terminal;
 use editor_processor::editor::Editor;
 use input_processor::args_parser::ArgParser;
 
+#[cfg(not(target_os = "windows"))]
 fn main() -> Result<(), Box<dyn Error>> {
     let _cleanup_obj = Cleanup::new();
 
