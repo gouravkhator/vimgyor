@@ -16,3 +16,4 @@ Introducing a terminal-based image editor...
 ## Special Credits
 
 - Terminal Color codes explained in detail in [this stackexchange answer](https://unix.stackexchange.com/a/124409).
+- Converting RGB to xterm color codes is detailed along with the approach in [this GitHub gist](https://gist.github.com/MicahElliott/719710).

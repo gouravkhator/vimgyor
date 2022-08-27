@@ -1,3 +1,4 @@
+use ansi_colours;
 use image::DynamicImage;
 use std::{error::Error, fs::File, io::Write};
 
@@ -6,10 +7,8 @@ use crate::error_handler::AppError;
 pub struct ImageUtils {}
 
 impl ImageUtils {
-    pub fn convert_rgb_to_256_color_code(red: u8, green: u8, blue: u8) -> u8 {
-        // Formula used: round(36 * (int(rgb[:2], 16) * 5) + 6 * (int(rgb[2:4], 16) * 5) + (int(rgb[4:], 16) * 5) + 16)
-        let color_code = 36 * (red as u64) * 5 + 6 * (green as u64) * 5 + (blue as u64) * 5 + 16;
-        color_code as u8
+    pub fn convert_rgb_to_xterm_color_code(rgb: [u8; 3]) -> u8 {
+        ansi_colours::ansi256_from_rgb(rgb)
     }
 
     pub fn convert_dynamic_image_to_vector(image: &DynamicImage) -> Vec<u8> {
@@ -44,5 +43,63 @@ impl ImageUtils {
         let mut file = File::create(output_file_path)?;
         file.write_all(raw_image_in_str.as_bytes())?;
         Ok(())
+    }
+
+    // this function is an experimental function, which will be explored later if needed
+    pub fn unimplemented_get_closest_xterm_color_code(rgb: [u8; 3]) -> u8 {
+        let incs = [0, 95, 135, 175, 215, 255];
+        let (mut res, mut closest) = (vec![], 0);
+
+        for &part in rgb.iter() {
+            let mut i = 0;
+
+            while i < incs.len() - 1 {
+                let (smaller, bigger) = (incs[i], incs[i + 1]);
+
+                if smaller <= part && part <= bigger {
+                    let (s1, b1) = (smaller.abs_diff(part), bigger.abs_diff(part));
+
+                    if s1 < b1 {
+                        closest = smaller;
+                    } else {
+                        closest = bigger;
+                    }
+
+                    res.push(closest);
+                    break;
+                }
+
+                i += 1;
+            }
+        }
+
+        /*
+        res contains the closest triplet to the inputted rgb,
+        but I am unsure know as to how to convert this `res` to xterm 256-color code
+        */
+        todo!();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn should_print_rgb_as_xterm_color_code() {
+        assert_eq!(
+            215,
+            ImageUtils::convert_rgb_to_xterm_color_code([241, 165, 52])
+        );
+        assert_eq!(16, ImageUtils::convert_rgb_to_xterm_color_code([1, 1, 1]));
+        assert_eq!(16, ImageUtils::convert_rgb_to_xterm_color_code([0, 1, 2]));
+        assert_eq!(
+            67,
+            ImageUtils::convert_rgb_to_xterm_color_code([95, 135, 175])
+        );
+        assert_eq!(
+            231,
+            ImageUtils::convert_rgb_to_xterm_color_code([255, 255, 255])
+        );
     }
 }

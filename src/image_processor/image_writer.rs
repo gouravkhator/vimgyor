@@ -23,11 +23,12 @@ impl CustomImageWriter {
         let colored_string_argument =
             format!("\\033[48;5;{};38;5;{}m{}\\033[0m", bg_color, fg_color, data);
 
+        // `-n` is mentioned as flag, so that we can override extra new line printed by default by the `echo` command
         let output_buf = Command::new("echo")
-            .arg("-e")
+            .arg("-en")
             .arg(colored_string_argument)
             .output()
-            .expect("failed to execute process")
+            .expect("Failed to print image colors")
             .stdout;
 
         Ok(output_buf)
@@ -43,13 +44,14 @@ impl CustomImageWriter {
 
         // TODO: do the operations on each vector using some stream, or using threads to fasten the process
         while i < len {
-            let red = raw_image_vector.get(0).unwrap_or(&255);
-            let green = raw_image_vector.get(1).unwrap_or(&255);
-            let blue = raw_image_vector.get(2).unwrap_or(&255);
+            let red = raw_image_vector.get(i).unwrap_or(&255);
+            let green = raw_image_vector.get(i + 1).unwrap_or(&255);
+            let blue = raw_image_vector.get(i + 2).unwrap_or(&255);
 
-            xterm_color_coded_vector.push(ImageUtils::convert_rgb_to_256_color_code(
+            // saves the xterm color code, which is created from converting the rgb to that xterm color
+            xterm_color_coded_vector.push(ImageUtils::convert_rgb_to_xterm_color_code([
                 *red, *green, *blue,
-            ));
+            ]));
 
             i += 3;
         }
@@ -76,37 +78,34 @@ impl CustomImageWriter {
 
 #[cfg(test)]
 mod tests {
-    use crate::image_processor::image_reader::CustomImageReader;
-
     use super::*;
-
-    #[test]
-    fn should_print_colored_hello_world() {
-        /*
-        Note: `95` is the code for tan color,
-        and `214` is the code for light orange
-        */
-        let output_buf =
-            CustomImageWriter::get_colored_output("Hello world!", 214, 95).unwrap_or_default();
-
-        // fetching the output_colored_string from the output buffer
-        let output_colored_string = ImageUtils::convert_vector_to_string(
-            &output_buf,
-            "Failed to load the image colors correctly. Please try again with other terminals..",
-        )
-        .unwrap_or_default();
-
-        println!("{}", output_colored_string);
-    }
+    use crate::image_processor::image_reader::CustomImageReader;
 
     #[test]
     fn should_print_colored_image_on_terminal() {
         let image: DynamicImage =
-            CustomImageReader::load_image("samples/sample_image_2.png").unwrap_or_default();
+            CustomImageReader::load_image("samples/sample_image_1.jpeg").unwrap_or_default();
 
         let colored_image_str =
             CustomImageWriter::convert_colored_image_to_string(&image).unwrap_or_default();
 
         println!("{}", colored_image_str);
+    }
+
+    #[test]
+    fn should_print_linux_color_codes_with_colors() {
+        for color in 0..=255 {
+            let output_buf =
+                CustomImageWriter::get_colored_output("Color:  ", color, color).unwrap_or_default();
+
+            // fetching the output_colored_string from the output buffer
+            let output_colored_string = ImageUtils::convert_vector_to_string(
+                &output_buf,
+                "Failed to load the image colors correctly. Please try again with other terminals..",
+            )
+            .unwrap_or_default();
+
+            println!("{}", output_colored_string);
+        }
     }
 }
